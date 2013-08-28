@@ -836,7 +836,6 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     params = Hash.toQueryString(params);
     if (params && /Konqueror|Safari|KHTML/.test(navigator.userAgent)) params += '&_='
 
-    // when GET, append parameters to URL
     if (this.method == 'get' && params)
       this.url += (this.url.indexOf('?') > -1 ? '&' : '?') + params;
 
@@ -856,7 +855,6 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
 
       this.transport.send(body);
 
-      /* Force Firefox to handle ready state 4 for synchronous requests */
       if (!this.options.asynchronous && this.transport.overrideMimeType)
         this.onStateChange();
 
@@ -883,16 +881,11 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
       headers['Content-type'] = this.options.contentType +
         (this.options.encoding ? '; charset=' + this.options.encoding : '');
 
-      /* Force "Connection: close" for older Mozilla browsers to work
-       * around a bug where XMLHttpRequest sends an incorrect
-       * Content-length header. See Mozilla Bugzilla #246651.
-       */
       if (this.transport.overrideMimeType &&
           (navigator.userAgent.match(/Gecko\/(\d{4})/) || [0,2005])[1] < 2005)
             headers['Connection'] = 'close';
     }
 
-    // user-defined headers
     if (typeof this.options.requestHeaders == 'object') {
       var extras = this.options.requestHeaders;
 
@@ -939,7 +932,6 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     }
 
     if (state == 'Complete') {
-      // avoid memory leak in MSIE: clean up
       this.transport.onreadystatechange = Prototype.emptyFunction;
     }
   },
@@ -1318,7 +1310,6 @@ Element.Methods = {
     return $A(arguments).first();
   },
 
-  // removes whitespace-only text node children
   cleanWhitespace: function(element) {
     element = $(element);
     var node = element.firstChild;
@@ -2054,7 +2045,6 @@ Form.Element.Serializers = {
   },
 
   optionValue: function(opt) {
-    // extend element because hasAttribute may not be native
     return Element.extend(opt).hasAttribute('value') ? opt.value : opt.text;
   }
 }
@@ -2369,7 +2359,6 @@ var Position = {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
 
-      // Safari fix
       if (element.offsetParent==document.body)
         if (Element.getStyle(element,'position')=='absolute') break;
 
