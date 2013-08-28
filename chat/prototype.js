@@ -1,4 +1,3 @@
-
 var Prototype = {
   Version: '1.5.0',
   BrowserFeatures: {
@@ -105,7 +104,6 @@ var Try = {
   }
 }
 
-/*--------------------------------------------------------------------------*/
 
 var PeriodicalExecuter = Class.create();
 PeriodicalExecuter.prototype = {
@@ -1094,7 +1092,6 @@ document.getElementsByClassName = function(className, parentElement) {
   }
 };
 
-/*--------------------------------------------------------------------------*/
 
 if (!window.Element)
   var Element = new Object();
@@ -1412,8 +1409,6 @@ Element.Methods = {
     if (display != 'none' && display != null) // Safari bug
       return {width: element.offsetWidth, height: element.offsetHeight};
 
-    // All *Width and *Height properties give 0 on elements with display none,
-    // so enable the element temporarily
     var els = element.style;
     var originalVisibility = els.visibility;
     var originalPosition = els.position;
@@ -1435,8 +1430,7 @@ Element.Methods = {
     if (pos == 'static' || !pos) {
       element._madePositioned = true;
       element.style.position = 'relative';
-      // Opera returns the offset relative to the positioning context, when an
-      // element is position relative but top and left have not been defined
+
       if (window.opera) {
         element.style.top = 0;
         element.style.left = 0;
@@ -1529,7 +1523,6 @@ Element.Methods.Simulated = {
   }
 };
 
-// IE is missing .innerHTML support for TABLE-related elements
 if (document.all && !window.opera){
   Element.Methods.update = function(element, html) {
     element = $(element);
@@ -1605,7 +1598,6 @@ Element.addMethods = function(methods) {
 var Toggle = new Object();
 Toggle.display = Element.toggle;
 
-/*--------------------------------------------------------------------------*/
 
 Abstract.Insertion = function(adjacency) {
   this.adjacency = adjacency;
@@ -1700,7 +1692,6 @@ Insertion.After.prototype = Object.extend(new Abstract.Insertion('afterEnd'), {
   }
 });
 
-/*--------------------------------------------------------------------------*/
 
 Element.ClassNames = Class.create();
 Element.ClassNames.prototype = {
@@ -1952,7 +1943,6 @@ Form.Methods = {
 
 Object.extend(Form, Form.Methods);
 
-/*--------------------------------------------------------------------------*/
 
 Form.Element = {
   focus: function(element) {
@@ -2022,7 +2012,6 @@ Object.extend(Form.Element, Form.Element.Methods);
 var Field = Form.Element;
 var $F = Form.Element.getValue;
 
-/*--------------------------------------------------------------------------*/
 
 Form.Element.Serializers = {
   input: function(element) {
@@ -2070,7 +2059,6 @@ Form.Element.Serializers = {
   }
 }
 
-/*--------------------------------------------------------------------------*/
 
 Abstract.TimedObserver = function() {}
 Abstract.TimedObserver.prototype = {
@@ -2112,7 +2100,6 @@ Form.Observer.prototype = Object.extend(new Abstract.TimedObserver(), {
   }
 });
 
-/*--------------------------------------------------------------------------*/
 
 Abstract.EventObserver = function() {}
 Abstract.EventObserver.prototype = {
@@ -2215,8 +2202,6 @@ Object.extend(Event, {
     }
   },
 
-  // find the first node with the given tagName, starting from the
-  // node the event was triggered on; traverses the DOM upwards
   findElement: function(event, tagName) {
     var element = Event.element(event);
     while (element.parentNode && (!element.tagName ||
@@ -2278,17 +2263,11 @@ Object.extend(Event, {
   }
 });
 
-/* prevent memory leaks in IE */
 if (navigator.appVersion.match(/\bMSIE\b/))
   Event.observe(window, 'unload', Event.unloadCache, false);
 var Position = {
-  // set to true if needed, warning: firefox performance problems
-  // NOT neeeded for page scrolling, only if draggable contained in
-  // scrollable elements
   includeScrollOffsets: false,
 
-  // must be called before calling withinIncludingScrolloffset, every time the
-  // page is scrolled
   prepare: function() {
     this.deltaX =  window.pageXOffset
                 || document.documentElement.scrollLeft
@@ -2346,7 +2325,6 @@ var Position = {
     return document.body;
   },
 
-  // caches x/y coordinate pair to use with overlap
   within: function(element, x, y) {
     if (this.includeScrollOffsets)
       return this.withinIncludingScrolloffsets(element, x, y);
@@ -2373,7 +2351,6 @@ var Position = {
             this.xcomp <  this.offset[0] + element.offsetWidth);
   },
 
-  // within must be called directly before
   overlap: function(mode, element) {
     if (!mode) return 0;
     if (mode == 'vertical')
@@ -2419,28 +2396,22 @@ var Position = {
       offsetLeft: 0
     }, arguments[2] || {})
 
-    // find page position of source
     source = $(source);
     var p = Position.page(source);
 
-    // find coordinate system to use
     target = $(target);
     var delta = [0, 0];
     var parent = null;
-    // delta [0,0] will do fine with position: fixed elements,
-    // position:absolute needs offsetParent deltas
     if (Element.getStyle(target,'position') == 'absolute') {
       parent = Position.offsetParent(target);
       delta = Position.page(parent);
     }
 
-    // correct by body offsets (fixes Safari)
     if (parent == document.body) {
       delta[0] -= document.body.offsetLeft;
       delta[1] -= document.body.offsetTop;
     }
 
-    // set position
     if(options.setLeft)   target.style.left  = (p[0] - delta[0] + options.offsetLeft) + 'px';
     if(options.setTop)    target.style.top   = (p[1] - delta[1] + options.offsetTop) + 'px';
     if(options.setWidth)  target.style.width = source.offsetWidth + 'px';
@@ -2486,9 +2457,6 @@ var Position = {
   }
 }
 
-// Safari returns margins on body which is incorrect if the child is absolutely
-// positioned.  For performance reasons, redefine Position.cumulativeOffset for
-// KHTML/WebKit only.
 if (/Konqueror|Safari|KHTML/.test(navigator.userAgent)) {
   Position.cumulativeOffset = function(element) {
     var valueT = 0, valueL = 0;
