@@ -828,7 +828,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     var params = this.options.parameters;
 
     if (!['get', 'post'].include(this.method)) {
-      // simulate other verbs over post
+    
       params['_method'] = this.method;
       this.method = 'post';
     }
